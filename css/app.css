@@ -1,6 +1,6 @@
 body{
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-    background-color: #6A9AB0;
+    background-color: #16423C;
     color:white;
     text-align: center;
 }
@@ -19,8 +19,15 @@ body{
   vertical-align: middle;
   font-size: 20px;
   cursor: pointer;
+  
 
   background-color: #eee;
   color: #333;
   }
   
+
+  footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 18px;
+}

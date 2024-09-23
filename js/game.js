@@ -20,6 +20,7 @@ var gGame = {
     secsPassed: 0
 }
 
+
 const EMPTY = ' '
 const MINE = '💣'
 const FLAG = '🚩'
@@ -30,7 +31,9 @@ const UNMARKED = '<img src=" /imgs/unmarked.png">'
 function onInit() {
     console.log('Hello')
     gBoard = buildBoard(gLevel.size)
+    // placeMines()
     renderBoard(gBoard)
+
 
 }
 
@@ -57,8 +60,17 @@ function buildBoard(size) {
 }
 
 function placeMines() {
-
+    var minesPlaced = 0;
+    while (minesPlaced < gLevel.mines) {
+        const i = Math.floor(Math.random() * gLevel.size);
+        const j = Math.floor(Math.random() * gLevel.size);
+        if (!gBoard[i][j].isMine) {
+            gBoard[i][j].isMine = true;
+            minesPlaced++;
+        }
+    }
 }
+
 
 
 function setMinesNegsCount(board) {
@@ -76,12 +88,12 @@ function setMinesNegsCount(board) {
 
 
 function renderBoard(board) {
+    setMinesNegsCount(gBoard)
     var strHTML = ''
     for (var i = 0; i < board.length; i++) {
         strHTML += '<tr>'
         for (var j = 0; j < board[0].length; j++) {
             const className = `cell cell-${i}-${j}`
-
 
             strHTML += `<td class="${className}" title="${i}-${j}"
                         onclick="onCellClicked(this,${i},${j})" 
@@ -97,23 +109,42 @@ function renderBoard(board) {
 }
 
 
+// function getEmptyCell(board) {
+//     const emptyCells = []
+
+
+//     for (var i = 0; i < board.length; i++) {
+//         for (var j = 0; j < board[i].length; j++) {
+//             const currCell = board[i][j]
+//             if (currCell.type === FLOOR && currCell.gameElement === null)
+//                 emptyCells.push({ i: i, j: j })
+//         }
+//     }
+
+//     if (!emptyCells.length) return null
+
+//     const randomIdx = getRandomInt(0, emptyCells.length - 1)
+//     return emptyCells[randomIdx]
+// }
+
+
 
 function onCellClicked(elCell, i, j) {
     var currCell = gBoard[i][j]
-
+    
     if (currCell.isMarked) return
 
 
     elCell.innerText = currCell.isMine ? MINE : currCell.minesAroundCount
     if (elCell.innerText === MINE) {
-        elCell.style.backgroundColor = '#c32929'
-        currCell.isShow = true
+        elCell.style.backgroundColor = '#B8001F'
+        currCell.isShown = true
     } else {
         elCell.style.backgroundColor = 'lightgrey'
-        currCell.isShow = true
+        currCell.isShown = true
         gGame.shownCount++
     }
-
+    
 
 }
 
@@ -124,7 +155,10 @@ function onCellMarked(elCell) {
 }
 
 function checkGameOver() {
-
+    if (currCell.isMine) {
+        alert('Game Over! You clicked a mine!');
+        return
+    }
 
 }
 
