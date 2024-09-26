@@ -5,19 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mine-Sweeper</title>
     <link rel="stylesheet" href="css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body onload="onInit()">
-    <h1>MineSweeper</h1>
+    <h1>Minesweeper Game</h1>
     
     <div class="status-container">
-        <span class="status-item">Mines Left: <span id="minesLeft">0</span></span>
-        <span class="status-item"> | Flags Left: <span id="flagsLeft">0</span></span>
-        <span class="status-item"> | Time: <span id="timer">0.000s</span></span>  
+        <span class="status-item"> 💣 Mines Left: <span id="minesLeft">0</span></span>
+        <span class="status-item"> | 🏴 Flags Left: <span id="flagsLeft">0</span></span>
+        <span class="status-item"> | 🕗 Time: <span id="timer">0.000s</span></span>
+        <span class="status-item"> | ❤️ Lives: <span class="livesCounter">3</span></span>  
     </div>
 
     <div class="restart">
-         <button class="resButton" onclick="onInit()">Restart</button>
+        <span class="restart-message">Click on emoji to restart</span>
+         <button class="smiley-button" onclick="restartGame()">😊</button>
     </div>
+
+    
     
 
     <table class="board-container">
@@ -25,12 +30,50 @@
     </table>
 
     <div>
-        <button onclick="setLevel(0)">Easy</button>
-        <button onclick="setLevel(1)">Medium</button>
-        <button onclick="setLevel(2)">Hard</button>
+        <button class="level-button easy" onclick="setLevel(0)">Easy</button>
+        <button class="level-button medium" onclick="setLevel(1)">Medium</button>
+        <button class="level-button hard" onclick="setLevel(2)">Hard</button>
+    </div>
+
+
+    <div class="instructions-button">
+        <button onclick="openInstructions()">How to Play</button>
     </div>
 
     
+    <div class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 class="modalMessage"></h2>
+            <button class="exit" onclick="restartGame()">Play Again</button>
+        </div>
+    </div>
+
+
+    <div class="instructions-modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeInstructions()">&times;</span>
+            <h2>How to Play Minesweeper</h2>
+            <ul>
+                <li><strong>Objective:</strong> Clear the board without triggering any mines.</li>
+                <li><strong>Starting the Game:</strong> Click on any cell to reveal it. The first click is always safe.</li>
+                <li><strong>Understanding Cells:</strong>
+                    <ul>
+                        <li><strong>Numbered Cells:</strong> Indicate how many mines are in the adjacent cells (including diagonals).</li>
+                        <li><strong>Empty Cells:</strong> No adjacent mines; clicking reveals surrounding cells automatically.</li>
+                        <li><strong>Mines:</strong> If clicked, you lose the game.</li>
+                    </ul>
+                </li>
+                <li><strong>Marking Mines:</strong> Right-click (on mouse) to place a flag on suspected mine locations.</li>
+                <li><strong>Winning the Game:</strong> Reveal all non-mine cells or correctly flag all the mines.</li>
+                <li><strong>Lives:</strong> You have a limited number of lives. Stepping on a mine reduces your lives.</li>
+                <li><strong>Timer:</strong> Keep track of your time; the goal is to clear the board as quickly as possible.</li>
+            </ul>
+        </div>
+    </div>
+
+
+
     <footer>
         <p>Created by Shoham</p>
     </footer>

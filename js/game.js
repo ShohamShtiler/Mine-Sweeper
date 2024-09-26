@@ -1,7 +1,7 @@
 'use strict'
 
 const gLevels = [
-    { size: 4, mines: 2 },    // Easy
+    { size: 4, mines: 3 },    // Easy
     { size: 8, mines: 12 },   // Medium
     { size: 12, mines: 30 }   // Hard
 ]
@@ -10,7 +10,7 @@ const victorySound = new Audio('sounds/victory.wav');
 const mineSound = new Audio('sounds/gameover.wav');
 const flagSound = new Audio('sounds/flag.mp3');
 const emptySound = new Audio('sounds/empty.mp3');
-mineSound.volume = 0.5;
+mineSound.volume = 0.2;
 victorySound.volume = 0.5;
 
 var gTimerInterval
@@ -24,7 +24,9 @@ var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: 0
+    secsPassed: 0,
+    isFirstClick: true,
+    lives: 3
 }
 
 var gCurrentLevelIndex = 0 // Default to Easy level
@@ -32,23 +34,26 @@ var gCurrentLevelIndex = 0 // Default to Easy level
 const EMPTY = ' '
 const MINE = '💣'
 const FLAG = '🚩'
-const UNMARKED = '<img src=" /imgs/unmarked.png">'
+
 
 
 
 function onInit() {
-    gGame.isOn = true
+    gGame.isOn = false
     gGame.markedCount = 0
     gGame.shownCount = 0
+    gGame.lives = 3
+    updateLivesDisplay()
     document.getElementById('timer').innerText = "0.000s"
     clearInterval(gTimerInterval)
     gTimerStarted = false
+    gGame.isFirstClick = true
     gBoard = buildBoard(gLevel.size)
-    placeMines()
     renderBoard(gBoard)
     updateMineAndFlagCount()
 
-
+    const smileyButton = document.querySelector('.smiley-button');
+    smileyButton.innerText = '😊'
 }
 
 
@@ -72,20 +77,31 @@ function buildBoard(size) {
     return board
 }
 
-function placeMines() {
+function placeMines(firstI, firstJ) {
     var minesPlaced = 0
-    while (minesPlaced < gLevel.mines) {
+    var maxAttempts = 100
+    while (minesPlaced < gLevel.mines && maxAttempts > 0) {
         const i = Math.floor(Math.random() * gLevel.size)
         const j = Math.floor(Math.random() * gLevel.size)
-        if (isCellSafe(i, j)) {
+
+        if (isCellSafe(i, j, firstI, firstJ)) {
             gBoard[i][j].isMine = true;
             minesPlaced++;
         }
+        maxAttempts--
+    }
+
+    if (minesPlaced < gLevel.mines) {
+        console.warn('Could not place all mines after multiple attempts. Please check the logic.');
     }
 }
 
-function isCellSafe(i, j) {
-    return !gBoard[i][j].isMine;
+
+function isCellSafe(i, j, firstI, firstJ) {
+    return (
+        !(i === firstI && j === firstJ) && // Not the first clicked cell
+        Math.abs(i - firstI) > 1 || Math.abs(j - firstJ) > 1 // Not adjacent
+    )
 }
 
 
@@ -127,59 +143,81 @@ function renderBoard(board) {
 
 
 function updateMineAndFlagCount() {
-    document.getElementById('minesLeft').innerText = gLevel.mines // Total mines
-    document.getElementById('flagsLeft').innerText = gLevel.mines - gGame.markedCount // Flags left
+    const minesLeft = gLevel.mines
+    const flagsLeft = gLevel.mines - gGame.markedCount
+
+    document.getElementById('minesLeft').innerText = minesLeft;
+    document.getElementById('flagsLeft').innerText = flagsLeft;
+
 }
 
 
 
 function checkWin() {
-    var correctFlags = 0; // Count correctly flagged mines
-    var totalCells = gLevel.size * gLevel.size; // Total cells
-    var revealedCells = gGame.shownCount; // Revealed cells count
+    var correctFlags = 0
+    var totalCells = gLevel.size * gLevel.size // Total cells
+    var revealedCells = gGame.shownCount // Revealed cells count
 
     // Iterate through the board to count flags and revealed cells
     for (var i = 0; i < gBoard.length; i++) {
         for (var j = 0; j < gBoard[i].length; j++) {
             const cell = gBoard[i][j];
             if (cell.isMine && cell.isMarked) {
-                correctFlags++; // Count correctly flagged mines
+                correctFlags++ // Count correctly flagged mines
             }
         }
     }
 
+    console.log(`Revealed Cells: ${revealedCells}, Correct Flags: ${correctFlags}, Total Cells: ${totalCells}, Lives: ${gGame.lives}`);
     // Check win condition
-    if (revealedCells + correctFlags === totalCells && correctFlags === gLevel.mines) {
+    if (revealedCells + correctFlags === totalCells || correctFlags === gLevel.mines) {
         alert('Congratulations! You win!')
         gGame.isOn = false
         victorySound.play()
         clearInterval(gTimerInterval)
+
+        const smileyButton = document.querySelector('.smiley-button')
+        smileyButton.innerText = '🏅' // Set to sunglasses for winning
     }
 }
 
 
 function onCellClicked(elCell, i, j) {
-    if (!gGame.isOn) return;
+    if (!gGame.isOn) {
+        gGame.isOn = true
+    }
+
+    if (gGame.isFirstClick) {
+        placeMines(i, j)
+        setMinesNegsCount(gBoard)
+        gGame.isFirstClick = false
+    }
+
+    // Reveal the clicked cell
+    var currCell = gBoard[i][j];
+    if (currCell.isMarked || currCell.isShown) return; // Prevent re-clicking
+
 
     if (!gTimerStarted) {
         startTimer()
         gTimerStarted = true // Set the flag to true
     }
 
-    var currCell = gBoard[i][j];
-    if (currCell.isMarked) return
 
     currCell.isShown = true;
     elCell.classList.add('revealed');
 
     if (currCell.isMine) {
-        // elCell.innerText = MINE
+
         elCell.innerHTML = `<img src="imgs/bomb.png" alt="Bomb" style="width: 30px; height: 30px;">`;
         elCell.classList.add('mine');
-        mineSound.play()
+        gGame.shownCount++
+        updateMineAndFlagCount();
         checkGameOver()
+
     } else {
         elCell.innerText = currCell.minesAroundCount
+        elCell.classList.add(`cell-${currCell.minesAroundCount}`)
         gGame.shownCount++
         emptySound.play()
 
@@ -230,10 +268,26 @@ function checkGameOver() {
         for (let j = 0; j < gBoard[i].length; j++) {
             const cell = gBoard[i][j]
             if (cell.isMine && cell.isShown) {
-                alert('Game Over! You clicked a mine!');
-                gGame.isOn = false // End the game
-                clearInterval(gTimerInterval)
-                return
+                gGame.lives--
+                updateLivesDisplay()
+
+
+                const minesLeftElement = document.getElementById('minesLeft');
+                minesLeftElement.innerText = Math.max(0, parseInt(minesLeftElement.innerText) - 1);
+
+
+                if (gGame.lives > 0) {
+                    alert(`You clicked a mine! Lives left: ${gGame.lives}`);
+                    return; // Allow the player to continue
+                } else {
+                    const smileyButton = document.querySelector('.smiley-button');
+                    smileyButton.innerText = '😵‍💫'; // Change to sad face
+                    mineSound.play()
+                    showModal('Game Over ! You lost all lives.');
+                    gGame.isOn = false; // End the game
+                    clearInterval(gTimerInterval);
+
+                }
             }
         }
     }
@@ -247,7 +301,8 @@ function expandShown(board, elCell, i, j) {
             if (row < 0 || col < 0 || row >= board.length || col >= board[0].length) continue;
             const neighborCell = board[row][col];
             if (!neighborCell.isShown && !neighborCell.isMine) {
-                onCellClicked(document.querySelector(`.cell-${row}-${col}`), row, col);
+                const neighborEl = document.querySelector(`.cell-${row}-${col}`);
+                onCellClicked(neighborEl, row, col)
             }
         }
     }
@@ -269,4 +324,50 @@ function startTimer() {
         const elapsedMilliseconds = Math.floor((elapsedTime % 1000) / 10); // Convert to milliseconds
         document.getElementById('timer').innerText = `${elapsedSeconds}.${elapsedMilliseconds.toString().padStart(3, '0')}s`; // Format: seconds.milliseconds
     }, 10); // Update every 10 ms for more accuracy
+}
+
+
+function updateLivesDisplay() {
+    const livesCounter = document.querySelector('.livesCounter')
+    livesCounter.innerText = gGame.lives
+}
+
+function showModal(message) {
+    document.querySelector('.modalMessage').innerText = message
+    document.querySelector('.modal').style.display = "block"
+}
+
+function closeModal() {
+    document.querySelector('.modal').style.display = "none"
+}
+
+function restartGame() {
+    
+    onInit()
+    closeModal()
+    const smileyButton = document.querySelector('.smiley-button')
+    smileyButton.innerText = '😊'; // Normal smiley on restart
+}
+
+
+function resetGame() {
+    const smileyButton = document.querySelector('.smiley-button');
+
+    if (!gGame.isOn) {
+        // Reset the game when it’s not on
+        onInit();
+        smileyButton.innerText = '😊'; // Normal smiley on reset
+    } else {
+        // If the game is ongoing, just reset to the normal smiley
+        smileyButton.innerText = '😊';
+    }
+}
+
+
+function openInstructions() {
+    document.querySelector('.instructions-modal').style.display = 'block';
+}
+
+function closeInstructions() {
+    document.querySelector('.instructions-modal').style.display = 'none';
 }
