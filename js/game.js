@@ -174,6 +174,7 @@ function checkWin() {
         alert('Congratulations! You win!')
         gGame.isOn = false
         victorySound.play()
+        showModal('VICTORY!!')
         clearInterval(gTimerInterval)
 
         const smileyButton = document.querySelector('.smiley-button')
@@ -277,7 +278,7 @@ function checkGameOver() {
 
 
                 if (gGame.lives > 0) {
-                    alert(`You clicked a mine! Lives left: ${gGame.lives}`);
+                    // alert(`You clicked a mine! Lives left: ${gGame.lives}`);
                     return; // Allow the player to continue
                 } else {
                     const smileyButton = document.querySelector('.smiley-button');

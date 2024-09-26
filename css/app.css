@@ -155,7 +155,7 @@ span{
 }
 
 .modal-content {
-  font-family: 'Press Start 2P', cursive;
+  /* font-family: 'Press Start 2P', cursive; */
   background-color: #B8001F;
   color:#000000;
   margin: 15% auto; 
