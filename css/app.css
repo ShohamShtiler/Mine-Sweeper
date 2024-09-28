@@ -1,24 +1,35 @@
+
+/* Global Styles */
 body {
   font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
   color: white;
   text-align: center;
-  animation: gradientAnimation 15s ease infinite; /* Animate the gradient */
+  animation: gradientAnimation 15s ease infinite; 
   background: linear-gradient(270deg, #F9ED69, #F08A5D, #B83B5E, #6A2C70);
-  background-size: 400% 400%; /* Control the gradient size */
-  margin: 0; /* Remove default margin */
-  height: 100vh; /* Full height */
+  background-size: 400% 400%; 
+  margin: 0; 
+  height: 100vh; 
 }
 
+h1{
+  font-family: 'Press Start 2P', cursive;
+}
+
+
+/* Animations */
 @keyframes gradientAnimation {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
   
-h1{
-  font-family: 'Press Start 2P', cursive;
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
+
+/* Board Styles */
 .board-container {
   display: inline-block;
   margin: 55px;
@@ -36,112 +47,123 @@ h1{
   cursor: pointer;
   background-color: #eee;
   color: #333;
-  transition: background-color 0.3s ease, transform 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease, border-radius 0.5s ease;
   }
   
-  .cell-1 { color: blue; }
-  .cell-2 { color: green; }
-  .cell-3 { color: red; }
-  .cell-4 { color: darkblue; }
-  .cell-5 { color: darkred; }
-  .cell-6 { color: orange; }
-  .cell-7 { color: pink; }
-  .cell-8 { color: gray; }
 
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-}
-
-  .cell.revealed {
+.cell.revealed {
     background-color: lightgrey;
-    transform: scale(1.05); /* Slightly enlarge the cell */
+    transform: scale(1.05); 
     animation: fadeIn 0.5s forwards;
 }
 
 .cell:hover {
-  transform: scale(1.1); /* Slightly enlarge on hover */
-  cursor: pointer; /* Change cursor to pointer */
+  transform: scale(1.1);
   background-color: #f8bc3b;
+  border-radius: 10px;
 }
 
+
+/* Cell Colors */
 .cell.mine {
-  background-color: #B8001F; /* Mine color */
+  background-color: #B8001F; 
 }
 
 .cell.flag {
-  background-color: #FADFA1; /* Flag color */
+  background-color: #FADFA1; 
 }
 
-  footer {
-    text-align: center;
-    margin-top: 80px;
-    font-size: 18px;
-    color: #000000;
-}
+.cell-1 { color: blue; }
+.cell-2 { color: green; }
+.cell-3 { color: red; }
+.cell-4 { color: darkblue; }
+.cell-5 { color: darkred; }
+.cell-6 { color: orange; }
+.cell-7 { color: pink; }
+.cell-8 { color: gray; }
 
+
+/* Button Styles */
 button {
   font-family: 'Times New Roman', Times, serif;
   height: 30px;
   font-size: 20px;
   cursor: pointer;
-  padding: 5px 10px; /* Add some padding */
-  border-radius: 5px; /* Rounded corners */
-  border: none; /* Remove default border */
+  padding: 5px 10px; 
+  border-radius: 5px; 
+  border: none; 
   background-color:#6A2C70 ;
-  color: black; /* Text color */
+  color: black; 
 }
+
 
 button:hover{
   background-color: white;
   color: black;
-  
-}
-
-span{
-  font-size: 20px;
-  font-family: 'Times New Roman', Times, serif;
-  
-}
-
-.restart{
-  height: 30px;
-  font-size: 20px;
-  margin-top: 20px;
-
 }
 
 
-.status-container {
+button.smiley-button {
+  background: none; 
+  border: none; 
+  padding: 0; 
+  margin:0; 
+  cursor: pointer; 
+  font-size: 30px; 
+  color: white; 
+  outline: none; 
+}
+
+.smiley-button:focus {
+    outline: none; 
+  }
+
+.smiley-button:hover {
+  opacity: 0.8; 
+}
+
+button.exit{
+  background-color: #F9ED69;
+  color: black;
+  }
   
-  display: flex; /* Use flexbox for alignment */
-  justify-content: center; /* Center items horizontally */
-  align-items: center; /* Center items vertically */
+button.exit:hover {
+    background-color: white;
+    color:black
+  }
+  
+  
+
+
+/* Status and Lives Counter */
+  .status-container {
+  
+  display: flex; 
+  justify-content: center; 
+  align-items: center; 
   padding: 10px; 
   background-color: white; 
   border: 2px solid #C4DAD2; 
-  border-radius: 5px; /* Rounded corners */
+  border-radius: 5px; 
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
   font-size: 18px; 
-  font-weight: bold; /* Bold text */
+  font-weight: bold; 
   color: #333; 
 }
 
 .status-item {
-  margin: 0 10px; /* Add margin between items */
-  transition: color 0.3s ease; /* Smooth color transition */
+  margin: 0 10px; 
+  transition: color 0.3s ease; 
 }
-
 
 .livesCounter {
   font-size: 20px;
   margin: 10px;
-  color: #000000; /* Red color for emphasis */
+  color: #000000; 
 }
 
 
-
-
+/* Modal Styles */
 .modal {
   display: none; 
   position: fixed; 
@@ -151,19 +173,18 @@ span{
   width: 100%; 
   height: 100%; 
   overflow: auto; 
-  background-color: rgba(0, 0, 0, 0.6); /* Slightly darker for better contrast */
+  background-color: rgba(0, 0, 0, 0.6); 
 }
 
 .modal-content {
-  /* font-family: 'Press Start 2P', cursive; */
   background-color: #B8001F;
   color:#000000;
-  margin: 15% auto; 
+  margin: 20% auto; 
   padding: 20px;
   border: 1px solid white;
   width: 80%; 
-  border-radius: 5px; /* Add rounded corners */
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Slight shadow for depth */
+  border-radius: 5px; 
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
 }
 
 .close {
@@ -181,45 +202,15 @@ span{
 }
 
 .modalMessage {
-  margin: 20px 0; /* Add margin for spacing */
-  font-size: 22px; /* Larger font for message */
-  text-align: center; /* Center the text */
-}
-
-button.exit{
-background-color: #F9ED69;
-color: black;
-}
-
-button.exit:hover{
-  background-color: white;
-  color:black
+  margin: 20px 0; 
+  font-size: 22px; 
+  text-align: center; 
 }
 
 
-button.smiley-button {
-  background: none; /* Remove background */
-  border: none; /* Remove border */
-  padding: 0; /* Remove padding */
-  margin:0; /* Remove any margin */
-  cursor: pointer; /* Pointer cursor on hover */
-  font-size: 30px; /* Adjust size as needed */
-  color: white; /* Text color, if applicable */
-  outline: none; /* Remove outline on focus */
-}
-
-.smiley-button:focus {
-  outline: none; /* Ensure no outline when focused */
-}
-
-/* Optional: to enhance hover effect */
-.smiley-button:hover {
-  opacity: 0.8; /* Slightly change opacity on hover for feedback */
-}
-
-
+/* Instruction Modal Styles */
 .instructions-modal {
-  display: none; /* Hidden by default */
+  display: none; 
   position: fixed; 
   z-index: 1000; 
   left: 0;
@@ -227,35 +218,36 @@ button.smiley-button {
   width: 100%; 
   height: 100%; 
   overflow: auto; 
-  background-color: rgba(0, 0, 0, 0.8); /* Darker background for contrast */
+  background-color: rgba(0, 0, 0, 0.8); 
 }
 
+
 .instructions-modal .modal-content {
-  background-color: #F9ED69; /* Modal background */
+  background-color: #F9ED69; 
   margin: 15% auto; 
   padding: 20px;
   border: 1px solid white;
   width: 80%; 
   border-radius: 5px; 
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); 
 }
 
 .instructions-modal h2 {
   color:black;
-  text-align: center; /* Center the title */
-  margin-bottom: 20px; /* Space below the title */
+  text-align: center; 
+  margin-bottom: 20px; 
 }
 
 .instructions-modal ul {
-  padding-left: 0; /* Remove left padding */
-    list-style-type: none; /* Remove bullets */
+  padding-left: 0; 
+    list-style-type: none; 
 }
 
 .instructions-modal ul li {
-  margin-bottom: 10px; /* Space between list items */
-  line-height: 1.5; /* Improve line height for readability */
-  font-size: 18px; /* Adjust font size */
-  color: #333; /* Change text color */
+  margin-bottom: 10px; 
+  line-height: 1.5; 
+  font-size: 18px; 
+  color: #333; 
 }
 
 .instructions-modal .close {
@@ -265,40 +257,63 @@ button.smiley-button {
   font-weight: bold;
 }
 
-div > button {
-  margin-top: 20px; /* Adjusts space above the buttons */
-}
-
-
+/* Level Styles */
 .easy {
-  background-color: #F9ED69; /* Green for Easy */
+  background-color: #F9ED69; 
 }
 
 .medium {
-  background-color: #F08A5D; /* Orange for Medium */
+  background-color: #F08A5D; 
 }
 
 .hard {
-  background-color: #B83B5E; /* Red for Hard */
+  background-color: #B83B5E; 
 }
 
-/* Optional: Add hover effects */
+
 .easy:hover {
-  background-color: white; /* Darker green */
+  background-color: white; 
 }
 
 .medium:hover {
-  background-color: white; /* Darker orange */
+  background-color: white; 
 }
 
 .hard:hover {
-  background-color: white; /* Darker red */
+  background-color: white; 
+}
+
+
+/* Miscellaneous Styles */
+.restart {
+  height: 30px;
+  font-size: 20px;
+  margin-top: 20px;
+
 }
 
 .restart-message {
-  display: block; /* Makes it a block element */
-  font-size: 20px; /* Font size */
-  /* Space between the text and button */
-  color:black; /* Text color */
+  display: block; 
+  font-size: 20px; 
+  color:black; 
   
+}
+
+
+span {
+  font-size: 20px;
+  font-family: 'Times New Roman', Times, serif;
+  
+}
+
+div > button {
+  margin-top: 20px; 
+}
+
+
+footer {
+  text-align: center;
+  margin-top: 80px;
+  font-size: 18px;
+  color: #000000;
 }
